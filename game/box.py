@@ -18,14 +18,31 @@ class Box:
         self.image = pygame.Surface((52, 52))
         self.image.fill((63, 63, 63))
         self.image.set_alpha(127)
+        # 记录在wall.three_match()中是否已在match组中
+        self.match = None
+
+    def __repr__(self):
+        return f'BOx({self.kind}, {self.g_pos}, {self.content})'
+
+    # 下面五个为功能函数
+    def is_empty(self):
+        return not bool(self.content)
+
+    def clear(self):
+        self.content = None
+
+    def contain(self, stone):
+        self.content = stone
+
+    def can_crush(self):
+        return self.kind == 'normal' and self.content
+
+    def same_stone_kind(self, box1, box2):
+        """需确定box1,box2可用"""
+        return self.content.kind == box1.content.kind == box2.content.kind
 
     # 绘制函数
     def draw(self, surf):
         """一般的box都要画出来"""
         if self.kind != 'generator':
             surf.blit(self.image, self.pos.tuple())
-
-    # update和它的子函数
-    def update(self):
-        if self.content:
-            self.content.update()

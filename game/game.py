@@ -34,6 +34,8 @@ class Game:
         self.wall = Wall(self, 10, 100, 60, shape, ['gold', 'wood', 'water', 'fire', 'soil'])
         # events
         self.events = None
+        # 绘制第一帧
+        pygame.display.flip()
 
     def control(self):
         for event in self.events:

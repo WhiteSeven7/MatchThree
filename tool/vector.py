@@ -10,12 +10,12 @@ class Vect:
         self.y = y
 
     @classmethod
-    def from_sequence(cls, sequence):
+    def fse(cls, sequence):
         """从列表、元组或任何可以[0][1]的数据结构中读取"""
         return cls(sequence[0], sequence[1])
 
     @classmethod
-    def from_mapping(cls, mapping):
+    def fma(cls, mapping):
         """从字典或任何可以['x']['y']的数据结构中读取"""
         return cls(mapping['x'], mapping['y'])
 
@@ -31,6 +31,9 @@ class Vect:
         return bool(self.x) or bool(self.y)
 
     # 数学运算
+    def __neg__(self):
+        return self.__class__(-self.x, -self.y)
+
     def __add__(self, other):
         return self.__class__(self.x + other.x, self.y + other.y)
 
@@ -127,11 +130,15 @@ class Vect:
             return atan(self.y / self.x)
         return sign(self.y) * pi + atan(self.y / self.x)
 
+    def half_max(self):
+        return max(abs(self.x), abs(self.y))
+
 
 UP = Vect(0, -1)
 DOWN = Vect(0, 1)
 LEFT = Vect(-1, 0)
 RIGHT = Vect(1, 0)
+LOZENGE = {UP, DOWN, LEFT, RIGHT}
 CLOVER = {
     Vect(0, -1), Vect(0, 1), Vect(-1, 0), Vect(1, 0),
     Vect(0, -2), Vect(0, 2), Vect(-2, 0), Vect(2, 0)

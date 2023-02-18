@@ -26,10 +26,13 @@ class Stone:
         self.kind = kind
         # 图像
         self.image = self.kind_image_dict[self.kind]
-        # 下落状态
-        self.need_fall = False
         # 在完成掉落时改为真，wall的fall()函数会通过此来识别哪些stone需要落入下一格
         self.finish_fall = False
+        # 用于在用户交换后移动，值为移动方向
+        self.moving = None
+
+    def __repr__(self):
+        return f'Stone({self.kind}, {self.g_pos}, {self.offset})'
 
     def draw(self, surf):
         self.pos = self._get_pos()
@@ -46,7 +49,7 @@ class Stone:
         if self.offset.y < self.wall.size:
             return
         # 更改wall.need_drop，申请wall.drop()，由wall.drop()关闭，为防止数据混乱，需要此次的wall.update()的迭代部分先完成
-        self.wall.need_drop = True
+        self.wall.faller.need_drop = True
         # 作为自己需要drop的标志，由wall.drop()识别，由wall.drop()调用的stone.fall_recover()关闭
         self.finish_fall = True
 
@@ -54,10 +57,16 @@ class Stone:
     def fall_recover(self):
         self.offset = Vect(0, 0)
         self.g_pos.y += 1
-        self.need_fall = False
         self.finish_fall = False
 
-    def update(self):
-        # need_fall，由wall.empty_check()开启，fall_recover()关闭
-        if self.need_fall:
-            self.fall()
+    def move(self):
+        """在此之前先检验self.moving是否为None"""
+        self.offset += 2 * self.moving
+        if self.offset.half_max() < self.wall.size:
+            return
+        self.wall.mover.need_exchange = True
+
+    def move_recover(self):
+        self.g_pos += self.moving
+        self.moving = None
+        self.offset = Vect(0, 0)

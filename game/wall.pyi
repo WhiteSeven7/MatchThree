@@ -1,11 +1,15 @@
 from typing import Collection
 
 from pygame import Surface
+from pygame.event import Event
 
 from tool.vector import Vect
+from .border import Border
 from .box import Box, BoxKind
+from .faller import Faller
 from .game import Game
-from .stone import Stone, StoneKind
+from .mover import Mover
+from .stone import StoneKind
 
 Shape = list[list[int]]
 
@@ -26,8 +30,24 @@ class Wall:
     # x,y方向的数量，用于有序迭代
     x_num: int
     y_num: int
-    # 若被改为真，则执行下落换位程序
-    need_drop: bool
+    # 记录能产生的Stone类型
+    stone_kinds: list[StoneKind]
+    faller: Faller
+
+    # # 若被改为真，则执行下落换位程序
+    # need_drop: bool
+    # # fall_match_time，有stone下落时始终为0，没有时会每帧+1（达到60时不增），达到60时才可以自动启动three_match()
+    # fm_time: int
+    # fm_cool: int
+    # 显示鼠标所在位置
+
+    mob: Border
+    # 被选中的位置，边框
+    clicked: Border
+    # 进行移动的相关操作
+    mover: Mover
+    # 储存get_three的结果，减少重复调用
+    three_list: None | list[set[Box]]
 
     # 通过self[..]对group进行管理
     def __getitem__(self, item: Vect) -> None | Box: ...
@@ -46,10 +66,10 @@ class Wall:
     def items(self) -> Collection[tuple[Vect, Box]]: ...
 
     # 初始化
-    def __init__(self, game: Game, x: int, y: int, size: int, shape: Shape, selected_kind: list[StoneKind]): ...
+    def __init__(self, game: Game, x: int, y: int, size: int, shape: 'Shape', selected_kind: list[StoneKind]): ...
 
     # 下面这些方法只在Wall实例化时运行，隶属于__init__的子函数
-    def _set_group(self, shape: Shape) -> None: ...
+    def _set_group(self, shape: 'Shape') -> dict[Vect, None | Box]: ...
 
     def _generate(self, selected_kind: list[StoneKind]) -> None: ...
 
@@ -58,11 +78,17 @@ class Wall:
     # 在每帧运行一次，剩下的是它的子函数
     def update(self, surf: Surface) -> None: ...
 
-    # 绘制，在这里是update子函数（因为drop()的需求），在box和stone中独立于update
+    # 在这里是update子函数（drop()的需求），并且在最后完成，在box和stone中独立于update
     def draw(self, surf: Surface) -> None: ...
 
-    def get_ups(self, empties: list[Box]) -> set[Stone]: ...
+    # 用户操作，empty_check()的子函数
+    def user_work(self, events: list[Event]) -> None: ...
 
-    def empty_check(self) -> None: ...
+    def _get_three_one_direction(self, box_set: set[Box]): ...
 
-    def drop(self) -> None: ...
+    def _get_three_one(self, gx: int, gy: int, box: Box) -> None: ...
+
+    def get_three(self) -> None: ...
+
+    # 三消，在没有空box时调用，返回值为是否发生三消，empty_check的子函数
+    def three_match(self) -> bool: ...
