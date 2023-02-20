@@ -7,9 +7,9 @@ from tool.vector import Vect
 from .border import Border
 from .box import Box, BoxKind
 from .faller import Faller
-from .game import Game
 from .mover import Mover
 from .stone import StoneKind
+from ..game import Game
 
 Shape = list[list[int]]
 

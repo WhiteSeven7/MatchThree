@@ -49,14 +49,15 @@ class Faller:
         else:
             if not self.is_ready():
                 self.fm_time += 1
-            if self.is_ready() and wall.three_match():
-                # 发生了三消，再次出现空box，重置empties
-                empties = [box for box in wall.values() if box.is_empty()]
-                self.fm_time = 0
-                self.set_fall(empties)
-            else:
-                # 未发生了三消
-                wall.user_work(wall.game.events)
+            if self.is_ready():
+                if wall.three_match():
+                    # 发生了三消，再次出现空box，重置empties
+                    empties = [box for box in wall.values() if box.is_empty()]
+                    self.fm_time = 0
+                    self.set_fall(empties)
+                else:
+                    # 未发生了三消
+                    wall.user_work(wall.game.events)
 
     # 应在主迭代后完成这个函数，并且需要need_drop为开启状态（即”条件启动“）
     def drop(self):

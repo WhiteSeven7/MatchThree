@@ -1,17 +1,17 @@
 import pygame
 
-from tool.filePath import get_path
+from tool.filePath import *
 from tool.vector import Vect
 
 
 class Stone:
     # ”种类-图片“字典
     kind_image_dict = {
-        'gold': pygame.image.load(get_path(__file__, '..\\res\\img\\stone\\gold.png')),
-        'wood': pygame.image.load(get_path(__file__, '..\\res\\img\\stone\\wood.png')),
-        'water': pygame.image.load(get_path(__file__, '..\\res\\img\\stone\\water.png')),
-        'fire': pygame.image.load(get_path(__file__, '..\\res\\img\\stone\\fire.png')),
-        'soil': pygame.image.load(get_path(__file__, '..\\res\\img\\stone\\soil.png'))
+        'gold': pygame.image.load(get_path(r'..\..\res\img\stone\gold.png')),
+        'wood': pygame.image.load(get_path(r'..\..\res\img\stone\wood.png')),
+        'water': pygame.image.load(get_path(r'..\..\res\img\stone\water.png')),
+        'fire': pygame.image.load(get_path(r'..\..\res\img\stone\fire.png')),
+        'soil': pygame.image.load(get_path(r'..\..\res\img\stone\soil.png'))
     }
 
     def __init__(self, wall, box, gx, gy, kind):
@@ -33,6 +33,10 @@ class Stone:
 
     def __repr__(self):
         return f'Stone({self.kind}, {self.g_pos}, {self.offset})'
+
+    # 下面一个是功能函数
+    def kind_is(self, kind):
+        return self.kind == kind
 
     def draw(self, surf):
         self.pos = self._get_pos()

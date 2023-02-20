@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pygame import Surface
+from pygame.surface import Surface
 
 from tool.vector import Vect
 from .box import Box
@@ -32,6 +32,9 @@ class Stone:
     def __init__(self, wall: Wall, box: Box, gx: int, gy: int, kind: StoneKind): ...
 
     def __repr__(self) -> str: ...
+
+    # 下面一个是功能函数
+    def kind_is(self, kind: StoneKind): ...
 
     # 绘画
     def draw(self, surf: Surface) -> None: ...

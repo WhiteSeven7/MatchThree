@@ -22,9 +22,9 @@ class Box:
         self.match = None
 
     def __repr__(self):
-        return f'BOx({self.kind}, {self.g_pos}, {self.content})'
+        return f'Box({self.kind}, {self.g_pos}, {self.content})'
 
-    # 下面五个为功能函数
+    # 下面六个为功能函数
     def is_empty(self):
         return not bool(self.content)
 
@@ -34,7 +34,11 @@ class Box:
     def contain(self, stone):
         self.content = stone
 
+    def kind_is(self, kind):
+        return self.kind == kind
+
     def can_crush(self):
+        """ 常规box且有stone """
         return self.kind == 'normal' and self.content
 
     def same_stone_kind(self, box1, box2):

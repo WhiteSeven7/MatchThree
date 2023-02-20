@@ -103,6 +103,7 @@ class Wall:
             se_kinds = safe_remove(se_kinds, up.content.kind)
         # 如果原se_kinds中少于或等于2个元素，se_kinds可能为空list
         box.contain(Stone(self, box, gx, gy, choice(se_kinds)))
+        ...
 
     # 在每帧运行一次
     def update(self, surf):
@@ -126,7 +127,7 @@ class Wall:
         for box in self.values():
             box.draw(surf)
         for box in self.values():
-            if box.kind == 'normal' and box.content:
+            if box.can_crush():
                 box.content.draw(surf)
         if self.mob.right_pos():
             self.mob.draw(surf)
@@ -144,7 +145,7 @@ class Wall:
             if event.type != pygame.MOUSEBUTTONDOWN:
                 continue
             g_pos = (Vect.fse(event.dict['pos']) - self.pos) // self.size
-            if not self[g_pos]:
+            if not self[g_pos] or self[g_pos].kind == 'generator':
                 continue
             # 用户点击了有效的位置
             clicked = self.clicked
@@ -207,7 +208,7 @@ class Wall:
         for gx in range(self.x_num):
             for gy in range(self.y_num):
                 box = self[Vect(gx, gy)]
-                if not (box and box.content and box.kind == 'normal'):
+                if not (box and box.can_crush()):
                     continue
                 self._get_three_one(gx, gy, box)
 
